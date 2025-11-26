@@ -5,10 +5,12 @@ import reactPlugin from 'eslint-plugin-react'
 import css from '@eslint/css'
 import jestPlugin from 'eslint-plugin-jest'
 import pluginPrettier from 'eslint-plugin-prettier/recommended'
+import pluginQuery from '@tanstack/eslint-plugin-query'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   globalIgnores(['build/dist']),
+  ...pluginQuery.configs['flat/recommended'],
   {
     files: ['**/*.{js,mjs,cjs,jsx}'],
     ...reactPlugin.configs.flat.recommended,
