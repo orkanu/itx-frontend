@@ -1,4 +1,37 @@
 .app {
-  display: flex;
-  justify-content: center;
+  display:flex; flex-direction:column; min-height:100vh
+}
+
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 20px;
+  background:#fff;
+  border-bottom:1px solid #eee;
+}
+
+.header__left {
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+
+.header__right{
+  font-weight:600;
+}
+
+.home-link{
+  font-weight:700;
+  text-decoration:none;
+  color:#111
+}
+
+.breadcrumbs{
+  color:#666;
+  font-size:14px;
+}
+
+.main {
+  padding:20px;
 }
