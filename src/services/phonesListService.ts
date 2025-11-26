@@ -1,6 +1,5 @@
 import { fetchWithRetry} from "@/services/utils/fetchWithRetry.ts";
-
-const BASE_URL = 'https://itx-frontend-test.onrender.com'
+import { BASE_URL } from "@/services/constants.ts";
 
 type Phone = {
   id: string,
@@ -15,7 +14,6 @@ export async function fetchListPhones(): Promise<Array<Phone>> {
     method: 'GET',
     headers: {
       Accept: "application/json",
-      "Content-Type": "application/json",
     },
   })
   if (!res?.ok) throw new Error('Failed to fetch products')

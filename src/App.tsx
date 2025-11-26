@@ -2,8 +2,10 @@ import React from 'react'
 import '@/App.css'
 import { Outlet, useLocation } from "react-router";
 import { Link } from 'react-router-dom';
+import useBasketStore from "@/store/basket.ts";
 
 const App = (): React.JSX.Element => {
+  const basketCount = useBasketStore(state => state.count)
   const location = useLocation()
 
   const breadcrumbs = location.pathname === '/' ? ['List'] : ['List', 'Details']
@@ -15,12 +17,12 @@ const App = (): React.JSX.Element => {
           <Link to="/" className="home-link">Home</Link>
           <nav className="breadcrumbs">
             {breadcrumbs.map((crumb, i) => (
-              <span key={i}>{crumb}</span>
+              <span key={crumb} className="crumb">{crumb}{i < breadcrumbs.length - 1 ? ' / ' : ''}</span>
             ))}
           </nav>
         </div>
         <div className="header__right">
-          <span>🛒 {"<Cart Count goes here>"}</span>
+          <span>🛒 {basketCount}</span>
         </div>
       </header>
       <main className="main">

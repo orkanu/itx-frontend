@@ -1,0 +1,71 @@
+.details {
+  display: flex;
+  gap: 20px;
+}
+
+.details-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: #0a66ff;
+  text-decoration: none;
+}
+
+.details-img {
+  width: 320px;
+  height: 320px;
+  object-fit: contain;
+  border: 1px solid #eee;
+  background: #fff;
+}
+
+.details-meta {
+  flex: 1;
+}
+
+.price {
+  font-weight: 700;
+  margin-top: 6px;
+  margin-bottom: 12px;
+}
+
+.options {
+  margin: 12px 0;
+}
+
+.option-list {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.option {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.option.active {
+  border-color: #0a66ff;
+  box-shadow: 0 0 0 3px rgba(10, 102, 255, 0.06);
+}
+
+.add-btn {
+  padding: 10px 14px;
+  border: none;
+  background: #0a66ff;
+  color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.specs {
+  margin-top: 18px;
+}
+
+/* Inline form error under Add to cart button */
+.form-error {
+  color: #b00020; /* accessible red */
+  margin-top: 8px;
+  font-size: 0.9rem;
+}

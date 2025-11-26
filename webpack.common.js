@@ -18,6 +18,7 @@ export default {
     filename: '[name]-[fullhash].js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
+    publicPath: '/',
   },
   optimization: { runtimeChunk: true },
   module: {
