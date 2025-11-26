@@ -91,6 +91,8 @@ describe('PhonesList', () => {
 
     // Ensure new data appears
     expect(await screen.findByText('Xiaomi')).toBeInTheDocument()
+    // Switch back to fake timers for cleanup
+    jest.useFakeTimers()
   })
 
   it('filters list when input has 3+ characters', async () => {
