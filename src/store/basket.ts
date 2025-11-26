@@ -12,7 +12,6 @@ const useBasketStore = create<BasketState>(
     (set) => ({
       count: 0,
       add: (n: number) => set((s) => ({ count: s.count + n })),
-      set: (n: number) => set(() => ({ count: n })),
     }),
     { name: 'basket-count' }
   )

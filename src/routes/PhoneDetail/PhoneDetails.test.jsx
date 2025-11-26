@@ -1,5 +1,5 @@
 import React from 'react'
-import {act, render, screen} from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -16,10 +16,9 @@ jest.mock('@/services/addToBasket.ts', () => ({
 }))
 
 const mockAdd = jest.fn()
-const mockSet = jest.fn()
 jest.mock('@/store/basket.ts', () => ({
   __esModule: true,
-  default: (selector) => selector({ add: mockAdd, set: mockSet }),
+  default: (selector) => selector({ add: mockAdd }),
 }))
 
 jest.mock('react-router-dom', () => {
@@ -81,7 +80,6 @@ const basePhone = {
 }
 
 describe('PhoneDetail', () => {
-
   it('shows loading then renders phone details', async () => {
     fetchPhoneById.mockResolvedValueOnce(basePhone)
 
@@ -138,7 +136,7 @@ describe('PhoneDetail', () => {
     await userEvent.click(addBtn)
 
     expect(addToBasket).toHaveBeenCalledWith({ id: '123', colorCode: 2, storageCode: 128 })
-    expect(mockSet).toHaveBeenCalledWith(7)
+    expect(mockAdd).toHaveBeenCalledWith(7)
   })
 
   it('shows an inline error when add to basket fails', async () => {
@@ -182,7 +180,7 @@ describe('PhoneDetail', () => {
     await userEvent.click(screen.getByRole('button', { name: /Add to basket/i }))
 
     expect(addToBasket).toHaveBeenCalledWith({ id: '123', colorCode: 9, storageCode: 256 })
-    expect(mockSet).toHaveBeenCalledWith(3)
+    expect(mockAdd).toHaveBeenCalledWith(3)
     // No validation error should appear
     expect(screen.queryByText(/Please select a color and a storage option/i)).not.toBeInTheDocument()
   })

@@ -19,7 +19,6 @@ const PhoneDetail = (): React.JSX.Element => {
 
   const { data, isLoading, error } = useQuery({ queryKey: ['phone', id], queryFn: () => fetchPhoneById(id) })
   const addToBasketCount = useBasketStore(state => state.add)
-  const setCount = useBasketStore(state => state.set)
   const [selectedColor, setSelectedColor] = useState<number | null>(null)
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null)
   const [adding, setAdding] = useState(false)
@@ -54,11 +53,7 @@ const PhoneDetail = (): React.JSX.Element => {
     setAdding(true)
     try {
       const resp = await addToBasket({ id: phone.id, colorCode: selectedColor, storageCode: selectedStorage })
-      if (resp) {
-        setCount(resp.count)
-      } else {
-        addToBasketCount(1)
-      }
+      addToBasketCount(resp.count)
       // Ensure error is cleared after a successful add
       setAddError('')
     } catch (err) {
