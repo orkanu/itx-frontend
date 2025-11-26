@@ -9,7 +9,7 @@ import pluginQuery from '@tanstack/eslint-plugin-query'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['build/dist']),
+  globalIgnores(['dist/', 'node_modules/', 'test/__config__/']),
   ...pluginQuery.configs['flat/recommended'],
   {
     files: ['**/*.{js,mjs,cjs,jsx}'],
@@ -50,10 +50,13 @@ export default defineConfig([
   },
   {
     // update this to match your test files
-    files: ['**/*.{spec.js,spec.jsx,test.js,test.jsx}'],
+    files: ['**/*.{spec.js,spec.jsx,test.js,test.jsx}', '**/__tests__/**/*.{js}'],
     plugins: { jest: jestPlugin },
     languageOptions: {
-      globals: jestPlugin.environments.globals.globals,
+      globals: {
+        ...jestPlugin.environments.globals.globals,
+        ...globals.jest,
+      },
     },
     rules: {
       'jest/no-disabled-tests': 'warn',

@@ -1,8 +1,16 @@
 import { fetchWithRetry} from "@/services/utils/fetchWithRetry.ts";
 
 const BASE_URL = 'https://itx-frontend-test.onrender.com'
-// TODO improve type and use instead of any
-export async function fetchListPhones(): Promise<Array<any>> {
+
+type Phone = {
+  id: string,
+  brand: string,
+  model: string,
+  price: number,
+  imgUrl: string,
+}
+
+export async function fetchListPhones(): Promise<Array<Phone>> {
   const res = await fetchWithRetry(`${BASE_URL}/api/product`, {
     method: 'GET',
     headers: {

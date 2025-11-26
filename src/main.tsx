@@ -2,22 +2,14 @@ import React from 'react'
 import './main.css'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { tanstackQueryClient } from "@/tanstackQueryClient.ts";
 import App from './App'
-import PhonesList from "@/routes/ProductList/ProductList.tsx";
+import PhonesList from "@/routes/PhoneList/PhoneList.tsx";
 import PhoneDetail from "@/routes/PhoneDetail/PhoneDetail.tsx";
-import NotFoundPage from "@/routes/NotFoundPage/NotFoundPage.tsx";
+import NotFound from "@/routes/NotFound/NotFound.tsx";
 
-// Create shared queryClient instance with cache expiration time of 1 hour
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 60,
-      gcTime: 1000 * 60 * 60,
-      refetchOnWindowFocus: false,
-    },
-  },
-})
+
 
 const router = createBrowserRouter([
   {
@@ -29,13 +21,13 @@ const router = createBrowserRouter([
   },
   {
     path: "*", // Catch-all 404 routes
-    element: <NotFoundPage />,
+    element: <NotFound />,
   },
 ])
 
 createRoot(document.getElementById('app') as HTMLElement).render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
+    <QueryClientProvider client={tanstackQueryClient}>
       <RouterProvider router={router} />
     </QueryClientProvider>
   </React.StrictMode>

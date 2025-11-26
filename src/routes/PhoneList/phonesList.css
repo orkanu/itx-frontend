@@ -1,0 +1,56 @@
+.controls {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.controls input {
+  padding: 8px 10px;
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.brand__model {
+  display: flex;
+  gap: 1rem;
+  padding: 6px;
+  background: #f6f6f6;
+  font-size: 12px;
+  align-items: center;
+}
+
+.brand__model p:first-child {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.phone__img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.meta {
+  padding: 10px;
+}
+.meta h3 {
+  margin: 0 0 6px;
+}
+.price {
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+.details-link {
+  display: inline-block;
+  margin-top: 8px;
+  color: #0a66ff;
+  text-decoration: none;
+}
