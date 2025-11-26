@@ -19,6 +19,7 @@ export default defineConfig([
       globals: {
         ...globals.serviceworker,
         ...globals.browser,
+        ...globals.node,
       },
     },
   },

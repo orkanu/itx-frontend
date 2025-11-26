@@ -1,6 +1,10 @@
 # Release
 dist/
 
+# Playwright
+playwright-report/
+test-results/
+
 ### Node ###
 # Logs
 logs

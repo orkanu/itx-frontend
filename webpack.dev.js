@@ -23,7 +23,12 @@ export default merge(common, {
       directory: path.join(__dirname, 'dist'),
     },
     liveReload: true,
-    open: true,
+    open: {
+      target: ['http://localhost:8080'],
+      app: {
+        name: 'Google Chrome',
+      },
+    },
     port: 8080,
     historyApiFallback: true,
     compress: true,
@@ -33,7 +38,7 @@ export default merge(common, {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: 'react app',
+      title: 'Products Shop',
       template: './src/index.html',
     }),
   ],

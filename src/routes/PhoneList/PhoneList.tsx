@@ -37,7 +37,7 @@ const PhonesList = () => {
     return (
       <>
         <Controls value={filter} setValue={setFilter} />
-        <p role="status">Loading phones…</p>
+        <p role="status" aria-live="polite">Loading phones…</p>
       </>
     )
   }
@@ -56,25 +56,53 @@ const PhonesList = () => {
   return (
     <>
       <Controls value={filter} setValue={setFilter} />
-      <div className="list">
+      <div
+        className="list"
+        role="list"
+        aria-describedby="phones-results-summary"
+      >
         {Array.isArray(data) && data.length === 0 ? (
-          <p>No phones found.</p>
+          <p role="status" aria-live="polite">No phones found.</p>
         ) : filtered.length === 0 && debounced.length >= 3 ? (
-          <p>No matches for "{debounced}".</p>
+          <p role="status" aria-live="polite">No matches for "{debounced}".</p>
         ) : (
-          filtered.map((phone: any) => (
-            <Card key={phone.id} >
-              <img src={phone.imgUrl} alt={`${phone.brand} ${phone.model}`} className="phone__img" />
-              <div className="meta">
-                <div className="brand__model">
-                  <p>{phone.brand}</p>
-                  <p>{phone.model}</p>
+          <>
+            <p
+              id="phones-results-summary"
+              style={{
+                position: 'absolute',
+                width: 1,
+                height: 1,
+                padding: 0,
+                margin: -1,
+                overflow: 'hidden',
+                clip: 'rect(0 0 0 0)',
+                whiteSpace: 'nowrap',
+                border: 0,
+              }}
+            >
+              {filtered.length} phone{filtered.length === 1 ? '' : 's'} shown.
+            </p>
+            {filtered.map((phone: any) => (
+              <Card key={phone.id} role="listitem" aria-label={`${phone.brand} ${phone.model}`}>
+                <img src={phone.imgUrl} alt={`${phone.brand} ${phone.model}`} className="phone__img" />
+                <div className="meta">
+                  <div className="brand__model">
+                    <p>{phone.brand}</p>
+                    <p>{phone.model}</p>
+                  </div>
+                  <p className="price">€{phone.price || '-' }</p>
+                  <Link
+                    to={`/phone/${phone.id}`}
+                    className="details-link"
+                    aria-label={`View details for ${phone.brand} ${phone.model}`}
+                  >
+                    View details
+                  </Link>
                 </div>
-                <p className="price">€{phone.price || '-' }</p>
-                <Link to={`/phone/${phone.id}`} className="details-link">View details</Link>
-              </div>
-            </Card>
-          ))
+              </Card>
+            ))}
+          </>
         )}
       </div>
     </>

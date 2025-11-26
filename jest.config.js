@@ -1,5 +1,6 @@
 export default {
   testEnvironment: 'jsdom',
+  testPathIgnorePatterns: ['/node_modules/', './dist', './e2e'],
   setupFilesAfterEnv: ['<rootDir>/test/__config__/setupTests.js'],
   moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx'],
   moduleDirectories: ['node_modules'],
