@@ -1,4 +1,4 @@
-import { fetchWithRetry } from "@/services/utils/fetchWithRetry.ts";
+import { fetchWithRetry } from "@/services/http/client.ts";
 import { BASE_URL } from "@/services/constants.ts";
 
 interface DeviceOption {
