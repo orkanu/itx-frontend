@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { phoneRepo } from '@/data/di'
+import { getPhoneById } from "@/domain/phone/use-cases/getPhoneById.ts";
 
 export function usePhone(id: string) {
-  return useQuery({ queryKey: ['phone', id], queryFn: () => phoneRepo.getById(id) })
+  const useCase = getPhoneById(phoneRepo)
+  return useQuery({ queryKey: ['phone', id], queryFn: () => useCase(id) })
 }
