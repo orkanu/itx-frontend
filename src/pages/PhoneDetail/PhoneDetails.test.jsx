@@ -3,16 +3,16 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { fetchPhoneById } from '@/services/phoneById.ts'
-import { addToBasket } from '@/services/addToBasket.ts'
+import { usePhone } from '@/features/phone/hooks/usePhone.ts'
+import { useAddToBasket } from "@/features/basket/hooks/useAddToBasket.ts";
 import PhoneDetail from './PhoneDetail.tsx'
 
-jest.mock('@/services/phoneById.ts', () => ({
-  fetchPhoneById: jest.fn(),
+jest.mock('@/features/phone/hooks/usePhone.ts', () => ({
+  usePhone: jest.fn(),
 }))
 
-jest.mock('@/services/addToBasket.ts', () => ({
-  addToBasket: jest.fn(),
+jest.mock('@/features/basket/hooks/useAddToBasket.ts', () => ({
+  useAddToBasket: jest.fn(),
 }))
 
 const mockAdd = jest.fn()
@@ -81,11 +81,27 @@ const basePhone = {
 
 describe('PhoneDetail', () => {
   it('shows loading then renders phone details', async () => {
-    fetchPhoneById.mockResolvedValueOnce(basePhone)
+    // First render: loading
+    usePhone.mockReturnValueOnce({ data: undefined, isLoading: true, error: null })
+    // Second render: success data
+    usePhone.mockReturnValueOnce({ data: basePhone, isLoading: false, error: null })
+    // All subsequent renders: stay with success data
+    usePhone.mockReturnValue({ data: basePhone, isLoading: false, error: null })
+    const mutateAsync = jest.fn()
+    useAddToBasket.mockReturnValue({ mutateAsync })
 
-    renderWithProviders(<PhoneDetail />)
+    const view = renderWithProviders(<PhoneDetail />)
 
     expect(screen.getByRole('status')).toHaveTextContent(/Loading/i)
+
+    // Trigger re-render to get success state
+    view.rerender(
+      <QueryClientProvider client={createTestClient()}>
+        <MemoryRouter>
+          <PhoneDetail />
+        </MemoryRouter>
+      </QueryClientProvider>
+    )
 
     expect(await screen.findByText(/Acme Turbo X/i)).toBeInTheDocument()
     expect(screen.getByAltText(/Acme Turbo X/i)).toBeInTheDocument()
@@ -95,7 +111,9 @@ describe('PhoneDetail', () => {
   })
 
   it('renders error state when fetch fails', async () => {
-    fetchPhoneById.mockRejectedValueOnce(new Error('boom'))
+    usePhone.mockReturnValue({ data: undefined, isLoading: false, error: new Error('boom') })
+    const mutateAsync = jest.fn()
+    useAddToBasket.mockReturnValue({ mutateAsync })
 
     renderWithProviders(<PhoneDetail />)
 
@@ -103,7 +121,9 @@ describe('PhoneDetail', () => {
   })
 
   it('shows validation error when adding without selections and clears after selecting', async () => {
-    fetchPhoneById.mockResolvedValueOnce(basePhone)
+    usePhone.mockReturnValue({ data: basePhone, isLoading: false, error: null })
+    const mutate = jest.fn()
+    useAddToBasket.mockReturnValue({ mutate })
 
     renderWithProviders(<PhoneDetail />)
 
@@ -123,8 +143,9 @@ describe('PhoneDetail', () => {
   })
 
   it('successfully adds to basket and updates basket count', async () => {
-    fetchPhoneById.mockResolvedValueOnce(basePhone)
-    addToBasket.mockResolvedValueOnce({ count: 7 })
+    usePhone.mockReturnValue({ data: basePhone, isLoading: false, error: null })
+    const mutateAsync = jest.fn().mockReturnValue({ count: 7 })
+    useAddToBasket.mockReturnValue({ mutateAsync })
 
     renderWithProviders(<PhoneDetail />)
 
@@ -135,13 +156,14 @@ describe('PhoneDetail', () => {
     const addBtn = screen.getByRole('button', { name: /Add to basket/i })
     await userEvent.click(addBtn)
 
-    expect(addToBasket).toHaveBeenCalledWith({ id: '123', colorCode: 2, storageCode: 128 })
+    expect(mutateAsync).toHaveBeenCalledWith({ id: '123', colorCode: 2, storageCode: 128 })
     expect(mockAdd).toHaveBeenCalledWith(7)
   })
 
   it('shows an inline error when add to basket fails', async () => {
-    fetchPhoneById.mockResolvedValueOnce(basePhone)
-    addToBasket.mockRejectedValueOnce(new Error('network'))
+    usePhone.mockReturnValue({ data: basePhone, isLoading: false, error: null })
+    const mutateAsync = jest.fn(() => { throw new Error('network') })
+    useAddToBasket.mockReturnValue({ mutateAsync })
 
     renderWithProviders(<PhoneDetail />)
 
@@ -163,8 +185,9 @@ describe('PhoneDetail', () => {
         storages: [{ code: 256, name: '256GB' }],
       },
     }
-    fetchPhoneById.mockResolvedValueOnce(singleOptionPhone)
-    addToBasket.mockResolvedValueOnce({ count: 3 })
+    usePhone.mockReturnValue({ data: singleOptionPhone, isLoading: false, error: null })
+    const mutateAsync = jest.fn().mockReturnValue({ count: 3 })
+    useAddToBasket.mockReturnValue({ mutateAsync })
 
     renderWithProviders(<PhoneDetail />)
 
@@ -179,7 +202,7 @@ describe('PhoneDetail', () => {
     // Click add without making manual selections
     await userEvent.click(screen.getByRole('button', { name: /Add to basket/i }))
 
-    expect(addToBasket).toHaveBeenCalledWith({ id: '123', colorCode: 9, storageCode: 256 })
+    expect(mutateAsync).toHaveBeenCalledWith({ id: '123', colorCode: 9, storageCode: 256 })
     expect(mockAdd).toHaveBeenCalledWith(3)
     // No validation error should appear
     expect(screen.queryByText(/Please select a color and a storage option/i)).not.toBeInTheDocument()

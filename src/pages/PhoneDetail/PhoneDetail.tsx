@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import { tanstackQueryClient } from '@/tanstackQueryClient.ts'
-import { fetchPhoneById } from "@/services/phoneById.ts";
-import { addToBasket } from "@/services/addToBasket.ts";
+import { tanstackQueryClient } from '@/app/tanstackQueryClient.ts'
+import { phoneRepo } from '@/data/di'
 import useBasketStore from "@/store/basket.ts";
+import {usePhone} from "@/features/phone/hooks/usePhone.ts";
+import {useAddToBasket} from "@/features/basket/hooks/useAddToBasket.ts";
+import type {BasketResponse} from "@/domain/basket/model.ts";
 import './phoneDetail.css'
 
 export async function phoneDetailsLoader({ params }: any) {
   const id = params.id
   if (!id) throw new Error('Missing id')
-  return tanstackQueryClient.fetchQuery({ queryKey: ['phone', id], queryFn: () => fetchPhoneById(id) })
+  return tanstackQueryClient.fetchQuery({ queryKey: ['phone', id], queryFn: () => phoneRepo.getById(id) })
 }
 
 const PhoneDetail = (): React.JSX.Element => {
   const { id } = useParams()
   if (!id) return <div>Missing id</div>
 
-  const { data, isLoading, error } = useQuery({ queryKey: ['phone', id], queryFn: () => fetchPhoneById(id) })
+  const addToBasket = useAddToBasket()
+  const { data, isLoading, error } = usePhone(id)
   const addToBasketCount = useBasketStore(state => state.add)
   const [selectedColor, setSelectedColor] = useState<number | null>(null)
   const [selectedStorage, setSelectedStorage] = useState<number | null>(null)
@@ -52,7 +54,7 @@ const PhoneDetail = (): React.JSX.Element => {
     setAddError('')
     setAdding(true)
     try {
-      const resp = await addToBasket({ id: phone.id, colorCode: selectedColor, storageCode: selectedStorage })
+      const resp: BasketResponse = await addToBasket.mutateAsync({id: phone.id, colorCode: selectedColor, storageCode: selectedStorage})
       addToBasketCount(resp.count)
       // Ensure error is cleared after a successful add
       setAddError('')

@@ -1,21 +1,21 @@
 import React, {useState, useEffect, useMemo } from 'react'
 import { Link} from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import { fetchListPhones } from '@/services/phonesListService.ts'
-import { tanstackQueryClient } from '@/tanstackQueryClient.ts'
+import { phoneRepo } from '@/data/di'
+import {usePhoneList} from "@/features/phone/hooks/usePhoneList.ts";
+import { tanstackQueryClient } from '@/app/tanstackQueryClient.ts'
 import './phonesList.css'
-import Controls from "@/routes/PhoneList/Controls.tsx";
+import Controls from "@/pages/PhoneList/Controls.tsx";
 import Card from "@/components/ui/card.tsx";
 
 // React Router loader that primes the query cache
 export async function phonesLoader() {
   // prime the cache using the shared tanstackQueryClient
-  return tanstackQueryClient.fetchQuery({ queryKey: ['phones'], queryFn: fetchListPhones })
+  return tanstackQueryClient.fetchQuery({ queryKey: ['phones'], queryFn: phoneRepo.list })
 }
 
 const PhonesList = () => {
   // useQuery reuses the data cached initially on the loader
-  const { data, isLoading, isError, error, refetch } = useQuery({ queryKey: ['phones'], queryFn: fetchListPhones })
+  const { data, isLoading, isError, error, refetch } = usePhoneList()
   const [filter, setFilter] = useState('')
   const [debounced, setDebounced] = useState('')
 

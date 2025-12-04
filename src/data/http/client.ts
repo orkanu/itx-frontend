@@ -1,3 +1,6 @@
+// Base URL for the API
+const BASE_URL = 'https://itx-frontend-test.onrender.com'
+
 // Utility function that adds automatic retry with exponential backoff:
 //  url: the resource URL to fetch.
 //  options: fetch configuration (e.g., headers, method, body).
@@ -7,12 +10,12 @@
 // If not, it attempts to retry if there are retries left (the wait time between retries increases every time
 // based on the backoffMs value)
 // I´m adding this as seems that the API service sometimes needs to warm up and the first fetch fails.
-export async function fetchWithRetry(
+async function fetchWithRetry(
   url: string,
   options = {},
   retries = 3,
   backoffMs = 500,
-) {
+): Promise<Response | undefined> {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const res = await fetch(url, options);
@@ -31,3 +34,5 @@ export async function fetchWithRetry(
     }
   }
 }
+
+export { fetchWithRetry, BASE_URL }

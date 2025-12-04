@@ -3,11 +3,11 @@ import './main.css'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { tanstackQueryClient } from "@/tanstackQueryClient.ts";
+import { tanstackQueryClient } from "@/app/tanstackQueryClient.ts";
 import App from './App'
-import PhonesList from "@/routes/PhoneList/PhoneList.tsx";
-import PhoneDetail from "@/routes/PhoneDetail/PhoneDetail.tsx";
-import NotFound from "@/routes/NotFound/NotFound.tsx";
+import PhonesList from "@/pages/PhoneList/PhoneList.tsx";
+import PhoneDetail from "@/pages/PhoneDetail/PhoneDetail.tsx";
+import NotFound from "@/pages/NotFound/NotFound.tsx";
 
 
 
@@ -20,7 +20,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "*", // Catch-all 404 routes
+    path: "*", // Catch-all 404 pages
     element: <NotFound />,
   },
 ])

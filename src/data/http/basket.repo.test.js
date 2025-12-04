@@ -1,14 +1,14 @@
-import { addToBasket } from '@/services/addToBasket.ts'
-import { BASE_URL } from '@/services/constants.ts'
+import { HttpBasketRepository } from './basket.repo.ts'
+import { fetchWithRetry, BASE_URL } from '@/data/http/client.ts'
 
-jest.mock('@/services/http/client.ts', () => ({
+jest.mock('@/data/http/client.ts', () => ({
   fetchWithRetry: jest.fn(),
 }))
 
-const { fetchWithRetry } = jest.requireMock('@/services/http/client.ts')
-
-describe('addToBasket', () => {
+describe('HttpBasketRepository', () => {
+  let testee;
   beforeEach(() => {
+    testee = new HttpBasketRepository()
     jest.clearAllMocks()
   })
 
@@ -20,7 +20,7 @@ describe('addToBasket', () => {
       json: () => Promise.resolve(responseBody),
     })
 
-    const result = await addToBasket(payload)
+    const result = await testee.add(payload)
 
     expect(fetchWithRetry).toHaveBeenCalledTimes(1)
     expect(fetchWithRetry).toHaveBeenCalledWith(`${BASE_URL}/api/cart`, {
@@ -34,8 +34,6 @@ describe('addToBasket', () => {
   it('throws a friendly error when response is not ok', async () => {
     fetchWithRetry.mockResolvedValueOnce({ ok: false, json: async () => ({}) })
 
-    await expect(
-      addToBasket({ id: 'abc', colorCode: 1, storageCode: 64 }),
-    ).rejects.toThrow('Failed to add to basket')
+    await expect(testee.add({ id: 'abc', colorCode: 1, storageCode: 64 })).rejects.toThrow('Failed to add to basket')
   })
 })
